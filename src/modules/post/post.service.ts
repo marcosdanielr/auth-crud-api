@@ -27,14 +27,18 @@ export class PostService {
   }
 
   async findOne(id: string, user_id: string) {
-    const post = await this.prisma.post.findFirst({
+    const postExists = await this.prisma.post.findFirst({
       where: {
         id,
         user_id
       }
     })
 
-    return post;
+    if (!postExists) {
+      throw new HttpException({ message: 'Post not exists' }, HttpStatus.NO_CONTENT);
+    }
+
+    return postExists;
 
   }
 

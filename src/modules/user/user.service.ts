@@ -56,6 +56,6 @@ export class UserService {
         id
       }
     })
-    res.status(HttpStatus.OK).send({ message: "User updated!" });
+    res.status(HttpStatus.OK).send({ message: "User deleted!" });
   }
 }
