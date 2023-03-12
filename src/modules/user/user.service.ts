@@ -16,13 +16,13 @@ export class UserService {
       }
     })
 
+    if (userExists) {
+      throw new HttpException({ message: 'User already exists!' }, HttpStatus.CONFLICT);
+    }
+
     const data = {
       ...createUserDto,
       password: await bcrypt.hash(createUserDto.password, 10)
-    }
-
-    if (userExists) {
-      throw new HttpException({ message: 'User already exists!' }, HttpStatus.CONFLICT);
     }
 
     await this.prisma.user.create({
@@ -39,12 +39,14 @@ export class UserService {
   }
 
   async updateMe(res: Response, updateUserDto: UpdateUserDto, id: string) {
+    console.log(updateUserDto);
     await this.prisma.user.update({
       data: updateUserDto,
       where: {
         id
       }
     })
+
     res.status(HttpStatus.OK).send({ message: "User updated!" });
   }
 
