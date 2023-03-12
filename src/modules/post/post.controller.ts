@@ -6,7 +6,7 @@ import { Response } from 'express';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '@prisma/client';
 
-@Controller('post')
+@Controller('api/post')
 export class PostController {
   constructor(private readonly postService: PostService) { }
 
