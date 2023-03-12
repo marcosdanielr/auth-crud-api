@@ -3,6 +3,7 @@ import { PrismaService } from 'src/providers/database/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -15,9 +16,18 @@ export class UserService {
       }
     })
 
+    const data = {
+      ...createUserDto,
+      password: await bcrypt.hash(createUserDto.password, 10)
+    }
+
     if (userExists) {
       throw new HttpException({ message: 'User already exists!' }, HttpStatus.CONFLICT);
     }
+
+    await this.prisma.user.create({
+      data
+    })
 
     res.status(HttpStatus.CREATED).send({ message: "User created!" });
   }

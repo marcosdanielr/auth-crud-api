@@ -3,9 +3,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { UserModule } from './modules/user/user.module';
 import { PostModule } from './modules/post/post.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
-  imports: [UserModule, PostModule],
+  imports: [AuthModule, UserModule, PostModule],
   controllers: [],
   providers: [
     {
