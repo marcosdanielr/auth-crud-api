@@ -10,12 +10,12 @@ import { User } from '@prisma/client';
 export class PostController {
   constructor(private readonly postService: PostService) { }
 
-  @Post()
+  @Post('create')
   create(res: Response, @Body() createPostDto: CreatePostDto, @CurrentUser() user: User) {
     return this.postService.create(res, createPostDto, user.id);
   }
 
-  @Get()
+  @Get('all')
   findAll(@CurrentUser() user: User) {
     return this.postService.findAll(user.id);
   }
@@ -25,12 +25,12 @@ export class PostController {
     return this.postService.findOne(id, user.id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(res: Response, @Param('id') id: string, @CurrentUser() user: User, @Body() updatePostDto: UpdatePostDto) {
     return this.postService.update(res, id, user.id, updatePostDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(res: Response, @Param('id') id: string, @CurrentUser() user: User) {
     return this.postService.delete(res, id, user.id);
   }
