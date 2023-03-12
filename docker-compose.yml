@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  nest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auth-user-crud 
+    restart: always
+    ports:
+      - 4000:4000
+    depends_on:
+      - sqlite3
+    env_file:
+      - .env
+
+  sqlite3:
+    container_name: sqlite3_container
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./database:/var/lib/sqlite/data
+    ports:
+      - '9595:9595' 
+    restart: unless-stopped
+
