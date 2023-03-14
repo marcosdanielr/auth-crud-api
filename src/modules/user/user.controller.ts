@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Res, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Res,
+  Delete,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,7 +19,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('user')
 @Controller('api/user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @IsPublic()
   @Post('create')
@@ -21,13 +29,17 @@ export class UserController {
 
   @ApiBearerAuth('access-token')
   @Get('get-me')
-  getMe(@CurrentUser() user: User) {
-    return user;
+  getMe(@Res() res: Response, @CurrentUser() user: User) {
+    return this.userService.getMe(res, user.id);
   }
 
   @ApiBearerAuth('access-token')
   @Patch('update-me')
-  update(@Res() res: Response, @Body() data: UpdateUserDto, @CurrentUser() user: User) {
+  update(
+    @Res() res: Response,
+    @Body() data: UpdateUserDto,
+    @CurrentUser() user: User,
+  ) {
     return this.userService.updateMe(res, data, user.id);
   }
 

@@ -4,58 +4,71 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(res: Response, createUserDto: CreateUserDto) {
     const userExists = await this.prisma.user.findUnique({
       where: {
-        email: createUserDto.email
-      }
-    })
+        email: createUserDto.email,
+      },
+    });
 
     if (userExists) {
-      throw new HttpException({ message: 'User already exists!' }, HttpStatus.CONFLICT);
+      throw new HttpException(
+        { message: 'User already exists!' },
+        HttpStatus.CONFLICT,
+      );
     }
 
     const data = {
       ...createUserDto,
-      password: await bcrypt.hash(createUserDto.password, 10)
-    }
+      password: await bcrypt.hash(createUserDto.password, 10),
+    };
 
     await this.prisma.user.create({
-      data
-    })
+      data,
+    });
 
-    res.status(HttpStatus.CREATED).send({ message: "User created!" });
+    res.status(HttpStatus.CREATED).send({ message: 'User created!' });
+  }
+
+  async getMe(res: Response, id: string) {
+    const response: User = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    res.status(HttpStatus.OK).send(response);
   }
 
   findByEmail(email: string) {
     return this.prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
   }
 
   async updateMe(res: Response, updateUserDto: UpdateUserDto, id: string) {
-    console.log(updateUserDto);
     await this.prisma.user.update({
       data: updateUserDto,
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
-    res.status(HttpStatus.OK).send({ message: "User updated!" });
+    res.status(HttpStatus.OK).send({ message: 'User updated!' });
   }
 
   async deleteMe(res: Response, id: string) {
     await this.prisma.user.delete({
       where: {
-        id
-      }
-    })
-    res.status(HttpStatus.OK).send({ message: "User deleted!" });
+        id,
+      },
+    });
+    res.status(HttpStatus.OK).send({ message: 'User deleted!' });
   }
 }
