@@ -43,7 +43,10 @@ export class UserService {
       },
     });
 
-    res.status(HttpStatus.OK).send(response);
+    res.status(HttpStatus.OK).send({
+      ...response,
+      password: undefined,
+    });
   }
 
   findByEmail(email: string) {
